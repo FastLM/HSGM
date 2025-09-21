@@ -216,12 +216,24 @@ class HierarchicalMemory:
             prev_summaries = torch.stack(previous_summaries).unsqueeze(0)
             embeddings_expanded = embeddings.unsqueeze(0)
             
-            attended, _ = self.summary_aggregator(
-                embeddings_expanded, 
-                prev_summaries, 
-                prev_summaries
-            )
-            cross_attn = attended.squeeze(0).mean(dim=0)
+            # Ensure dimensions match
+            if prev_summaries.size(-1) == embeddings.size(-1):
+                attended, _ = self.summary_aggregator(
+                    embeddings_expanded, 
+                    prev_summaries, 
+                    prev_summaries
+                )
+                cross_attn = attended.squeeze(0).mean(dim=0)
+            else:
+                # Project previous summaries to match embedding dimension
+                projection = nn.Linear(prev_summaries.size(-1), embeddings.size(-1)).to(embeddings.device)
+                projected_summaries = projection(prev_summaries)
+                attended, _ = self.summary_aggregator(
+                    embeddings_expanded, 
+                    projected_summaries, 
+                    projected_summaries
+                )
+                cross_attn = attended.squeeze(0).mean(dim=0)
         else:
             cross_attn = torch.zeros(self.hidden_dim)
         
