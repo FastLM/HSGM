@@ -128,7 +128,7 @@ class LocalSemanticGraph:
         edge_idx = 0
         for i in range(seq_len):
             for j in range(i + 1, seq_len):
-                if edge_idx < len(similarities):
+                if edge_idx < len(similarities) and i < len(nodes) and j < len(nodes):
                     sim = similarities[edge_idx]
                     if sim >= threshold:
                         edge = GraphEdge(
