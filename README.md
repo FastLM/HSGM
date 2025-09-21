@@ -392,7 +392,7 @@ If you use HSGM in your research, please cite our paper:
 
 ```bibtex
 @inproceedings{
-anonymous2025hsgm,
+liu2025hsgm,
 title={{HSGM}: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics},
 author={Liu, Dong and Yu, Yanxuan},
 booktitle={The 14th Joint Conference on Lexical and Computational Semantics},
