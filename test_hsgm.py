@@ -15,35 +15,35 @@ def test_basic_imports():
     
     try:
         from config import HSGMConfig, DatasetConfig, ExperimentConfig
-        print("✓ Config imports successful")
+        print(" Config imports successful")
     except ImportError as e:
         print(f"✗ Config import failed: {e}")
         return False
     
     try:
         from hsgm import HSGMModel, HSGMForClassification
-        print("✓ HSGM model imports successful")
+        print(" HSGM model imports successful")
     except ImportError as e:
         print(f"✗ HSGM model import failed: {e}")
         return False
     
     try:
         from evaluation import Evaluator
-        print("✓ Evaluator import successful")
+        print(" Evaluator import successful")
     except ImportError as e:
         print(f"✗ Evaluator import failed: {e}")
         return False
     
     try:
         from baselines import BaselineModels
-        print("✓ Baselines import successful")
+        print(" Baselines import successful")
     except ImportError as e:
         print(f"✗ Baselines import failed: {e}")
         return False
     
     try:
         from visualization import HSGMVisualizer
-        print("✓ Visualization import successful")
+        print(" Visualization import successful")
     except ImportError as e:
         print(f"✗ Visualization import failed: {e}")
         return False
@@ -61,9 +61,9 @@ def test_config_creation():
         dataset_config = DatasetConfig()
         experiment_config = ExperimentConfig()
         
-        print(f"✓ HSGM config created: hidden_dim={config.hidden_dim}, segment_size={config.segment_size}")
-        print(f"✓ Dataset config created: document_amr_path={dataset_config.document_amr_path}")
-        print(f"✓ Experiment config created: num_eval_runs={experiment_config.num_eval_runs}")
+        print(f" HSGM config created: hidden_dim={config.hidden_dim}, segment_size={config.segment_size}")
+        print(f" Dataset config created: document_amr_path={dataset_config.document_amr_path}")
+        print(f" Experiment config created: num_eval_runs={experiment_config.num_eval_runs}")
         
         return True
     except Exception as e:
@@ -91,7 +91,7 @@ def test_hsgm_model_creation():
             device=config.device
         )
         
-        print(f"✓ HSGM model created successfully")
+        print(f" HSGM model created successfully")
         print(f"  - Hidden dim: {model.hidden_dim}")
         print(f"  - Segment size: {model.segment_size}")
         print(f"  - Device: {model.device}")
@@ -131,7 +131,7 @@ def test_document_processing():
         print(f"Processing {len(test_documents)} test documents...")
         output = model(test_documents)
         
-        print(f"✓ Document processing successful")
+        print(f" Document processing successful")
         print(f"  - Output embeddings shape: {output.embeddings.shape}")
         print(f"  - Number of summary nodes: {len(output.summary_nodes)}")
         print(f"  - Processing time: {output.processing_time:.4f}s")
@@ -152,13 +152,13 @@ def test_baseline_models():
         
         baselines = BaselineModels(device="cpu")
         
-        print(f"✓ Baseline models created successfully")
+        print(f" Baseline models created successfully")
         print(f"  - Available models: {list(baselines.models.keys())}")
         
         # Test one baseline
         try:
             full_graph_model = baselines.get_model("full_graph")
-            print(f"✓ Full graph baseline created")
+            print(f" Full graph baseline created")
         except Exception as e:
             print(f"✗ Full graph baseline failed: {e}")
         
@@ -176,7 +176,7 @@ def test_evaluator():
         
         evaluator = Evaluator(device="cpu")
         
-        print(f"✓ Evaluator created successfully")
+        print(f" Evaluator created successfully")
         
         return True
     except Exception as e:
@@ -192,7 +192,7 @@ def test_visualization():
         
         visualizer = HSGMVisualizer()
         
-        print(f"✓ Visualizer created successfully")
+        print(f" Visualizer created successfully")
         print(f"  - Available colors: {list(visualizer.colors.keys())}")
         
         return True
@@ -209,14 +209,14 @@ def test_utils():
         
         # Test complexity metrics
         metrics = compute_complexity_metrics(1000, 256)
-        print(f"✓ Complexity metrics computed")
+        print(f" Complexity metrics computed")
         print(f"  - HSGM complexity: {metrics['hsgm_complexity']:.2f}")
         print(f"  - Full graph complexity: {metrics['full_graph_complexity']:.2f}")
         print(f"  - Speedup: {metrics['theoretical_speedup']:.2f}x")
         
         # Test error bounds
         error_bound = compute_approximation_error_bound(0.2, 0.1)
-        print(f"✓ Error bound computed: {error_bound:.4f}")
+        print(f" Error bound computed: {error_bound:.4f}")
         
         return True
     except Exception as e:
@@ -253,10 +253,10 @@ def run_all_tests():
     print(f"Test Results: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All tests passed! HSGM implementation is working correctly.")
+        print(" All tests passed! HSGM implementation is working correctly.")
         return True
     else:
-        print("❌ Some tests failed. Please check the implementation.")
+        print(" Some tests failed. Please check the implementation.")
         return False
 
 if __name__ == "__main__":
