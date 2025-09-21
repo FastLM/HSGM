@@ -20,7 +20,7 @@ def test_basic_functionality():
         
         # Test configuration
         config = HSGMConfig()
-        print(f"✓ Configuration created: segment_size={config.segment_size}")
+        print(f"Configuration created: segment_size={config.segment_size}")
         
         # Test local semantic graph
         local_graph = LocalSemanticGraph(hidden_dim=64, local_threshold=0.2)
@@ -229,10 +229,10 @@ def run_simple_tests():
     print(f"Simple Test Results: {passed}/{total} tests passed")
     
     if passed == total:
-        print("🎉 All simple tests passed! Core HSGM functionality is working.")
+        print("All simple tests passed! Core HSGM functionality is working.")
         return True
     else:
-        print("❌ Some tests failed. Please check the implementation.")
+        print("Some tests failed. Please check the implementation.")
         return False
 
 if __name__ == "__main__":

@@ -13,12 +13,12 @@ Semantic parsing of long documents remains challenging due to quadratic growth i
 
 ## Key Features
 
-- 🚀 **Efficient Processing**: Reduces complexity from O(N²) to O(Nk + (N/k)²)
-- 🧠 **Hierarchical Memory**: Maintains both local and global semantic structures
-- 📈 **Incremental Updates**: Supports streaming document processing
-- 🔍 **Hierarchical Querying**: Top-K retrieval with fine-grained reasoning
-- 📊 **Comprehensive Evaluation**: Extensive comparison with state-of-the-art baselines
-- 🎯 **Multiple Tasks**: Supports AMR parsing, SRL, event extraction, QA, and summarization
+- **Efficient Processing**: Reduces complexity from O(N²) to O(Nk + (N/k)²)
+- **Hierarchical Memory**: Maintains both local and global semantic structures
+- **Incremental Updates**: Supports streaming document processing
+- **Hierarchical Querying**: Top-K retrieval with fine-grained reasoning
+- **Comprehensive Evaluation**: Extensive comparison with state-of-the-art baselines
+- **Multiple Tasks**: Supports AMR parsing, SRL, event extraction, QA, and summarization
 
 ## Installation
 
@@ -388,11 +388,13 @@ python -m pytest tests/
 If you use HSGM in your research, please cite our paper:
 
 ```bibtex
-@inproceedings{liu2024hsgm,
-  title={HSGM: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics},
-  author={Liu, Dong and Yu, Yanxuan},
-  booktitle={Proceedings of the Conference on Empirical Methods in Natural Language Processing},
-  year={2024}
+@inproceedings{
+anonymous2025hsgm,
+title={{HSGM}: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics},
+author={Liu, Dong and Yu, Yanxuan},
+booktitle={The 14th Joint Conference on Lexical and Computational Semantics},
+year={2025},
+url={https://openreview.net/forum?id=NgbsJ3umjn}
 }
 ```
 
