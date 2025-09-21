@@ -97,18 +97,21 @@ print(f"Cache hit rate: {update_stats['hit_rate']:.3f}")
 
 ## Demo
 
-Run the comprehensive demo to see HSGM in action:
+Run the comprehensive demo and test suite to see HSGM in action:
 
 ```bash
-python demo.py
+python run_demo.py
 ```
 
 This will demonstrate:
-- Basic document processing
-- Comparison with baseline models
-- Streaming document processing
-- Visualization capabilities
+- Basic component functionality
+- Local semantic graph construction
+- Hierarchical memory management
+- Incremental update mechanism
+- Query processing capabilities
 - Theoretical complexity analysis
+- Visualization components
+- Baseline model comparison
 
 ## Training
 
