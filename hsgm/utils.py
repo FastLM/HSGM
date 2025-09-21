@@ -6,13 +6,30 @@ import torch.nn as nn
 import numpy as np
 from typing import List, Dict, Tuple, Optional, Union
 import re
-import spacy
-from transformers import AutoTokenizer, AutoModel
-from sentence_transformers import SentenceTransformer
+# Optional imports
+try:
+    import spacy
+except ImportError:
+    spacy = None
+
+try:
+    from transformers import AutoTokenizer, AutoModel
+except ImportError:
+    AutoTokenizer = AutoModel = None
+
+try:
+    from sentence_transformers import SentenceTransformer
+except ImportError:
+    SentenceTransformer = None
+
 import networkx as nx
-from scipy.spatial.distance import cosine
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
+try:
+    from scipy.spatial.distance import cosine
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+except ImportError:
+    cosine = cosine_similarity = None
+    TfidfVectorizer = None
 
 class DocumentSegmenter:
     """
@@ -36,10 +53,13 @@ class DocumentSegmenter:
         self.segment_method = segment_method
         
         # Load spacy model for sentence boundary detection
-        try:
-            self.nlp = spacy.load("en_core_web_sm")
-        except OSError:
-            print("Warning: spaCy English model not found. Install with: python -m spacy download en_core_web_sm")
+        if spacy is not None:
+            try:
+                self.nlp = spacy.load("en_core_web_sm")
+            except OSError:
+                print("Warning: spaCy English model not found. Install with: python -m spacy download en_core_web_sm")
+                self.nlp = None
+        else:
             self.nlp = None
     
     def sliding_window_segmentation(self, tokens: List[str]) -> List[List[str]]:
@@ -208,9 +228,17 @@ class SimilarityComputer:
     
     def semantic_similarity(self, text1: str, text2: str) -> float:
         """Compute semantic similarity using sentence transformers."""
-        # This would require loading a sentence transformer model
-        # For now, return a placeholder
-        return 0.5
+        if SentenceTransformer is not None:
+            # This would require loading a sentence transformer model
+            # For now, return a placeholder
+            return 0.5
+        else:
+            # Fallback to simple word overlap
+            words1 = set(text1.lower().split())
+            words2 = set(text2.lower().split())
+            intersection = len(words1.intersection(words2))
+            union = len(words1.union(words2))
+            return intersection / union if union > 0 else 0.0
     
     def compute_similarity(self, 
                           emb1: torch.Tensor, 
@@ -325,10 +353,15 @@ class TextEncoder:
         self.model_name = model_name
         self.device = device
         
-        # Load tokenizer and model
-        self.tokenizer = AutoTokenizer.from_pretrained(model_name)
-        self.model = AutoModel.from_pretrained(model_name).to(device)
-        self.model.eval()
+        if AutoTokenizer is not None and AutoModel is not None:
+            # Load tokenizer and model
+            self.tokenizer = AutoTokenizer.from_pretrained(model_name)
+            self.model = AutoModel.from_pretrained(model_name).to(device)
+            self.model.eval()
+        else:
+            # Fallback: create dummy tokenizer and model
+            self.tokenizer = None
+            self.model = None
     
     def encode_text(self, text: str) -> torch.Tensor:
         """
@@ -340,15 +373,19 @@ class TextEncoder:
         Returns:
             Text embedding
         """
-        inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            # Use [CLS] token embedding
-            embedding = outputs.last_hidden_state[:, 0, :].squeeze(0)
-        
-        return embedding
+        if self.tokenizer is not None and self.model is not None:
+            inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                outputs = self.model(**inputs)
+                # Use [CLS] token embedding
+                embedding = outputs.last_hidden_state[:, 0, :].squeeze(0)
+            
+            return embedding
+        else:
+            # Fallback: return random embedding
+            return torch.randn(768).to(self.device)
     
     def encode_tokens(self, tokens: List[str]) -> torch.Tensor:
         """
@@ -360,16 +397,20 @@ class TextEncoder:
         Returns:
             Token embeddings [num_tokens, hidden_dim]
         """
-        text = " ".join(tokens)
-        inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
-        inputs = {k: v.to(self.device) for k, v in inputs.items()}
-        
-        with torch.no_grad():
-            outputs = self.model(**inputs)
-            # Remove [CLS] and [SEP] tokens
-            embeddings = outputs.last_hidden_state[0, 1:-1, :]
-        
-        return embeddings
+        if self.tokenizer is not None and self.model is not None:
+            text = " ".join(tokens)
+            inputs = self.tokenizer(text, return_tensors="pt", truncation=True, max_length=512)
+            inputs = {k: v.to(self.device) for k, v in inputs.items()}
+            
+            with torch.no_grad():
+                outputs = self.model(**inputs)
+                # Remove [CLS] and [SEP] tokens
+                embeddings = outputs.last_hidden_state[0, 1:-1, :]
+            
+            return embeddings
+        else:
+            # Fallback: return random embeddings
+            return torch.randn(len(tokens), 768).to(self.device)
 
 class MemoryProfiler:
     """

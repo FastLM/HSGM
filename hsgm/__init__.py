@@ -9,7 +9,7 @@ efficient semantic understanding.
 __version__ = "1.0.0"
 __author__ = "Dong Liu, Yanxuan Yu"
 
-from .core import HSGMModel
+from .core import HSGMModel, HSGMForClassification, HSGMForGeneration
 from .components import (
     LocalSemanticGraph,
     HierarchicalMemory,
@@ -24,6 +24,8 @@ from .utils import (
 
 __all__ = [
     "HSGMModel",
+    "HSGMForClassification",
+    "HSGMForGeneration",
     "LocalSemanticGraph", 
     "HierarchicalMemory",
     "IncrementalUpdater",

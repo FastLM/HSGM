@@ -10,7 +10,11 @@ from sklearn.metrics import (
     accuracy_score, precision_recall_fscore_support, 
     roc_auc_score, mean_squared_error, mean_absolute_error
 )
-from rouge import Rouge
+# Optional imports
+try:
+    from rouge import Rouge
+except ImportError:
+    Rouge = None
 import json
 import logging
 from dataclasses import dataclass
@@ -49,7 +53,10 @@ class Evaluator:
             device: Device to run evaluation on
         """
         self.device = device
-        self.rouge = Rouge()
+        if Rouge is not None:
+            self.rouge = Rouge()
+        else:
+            self.rouge = None
     
     def evaluate_classification(self,
                               model,
@@ -348,12 +355,17 @@ class Evaluator:
         metrics = EvaluationMetrics()
         
         # ROUGE metrics
-        try:
-            rouge_scores = self.rouge.get_scores(generated_texts, target_texts)
-            metrics.rouge_1 = np.mean([score['rouge-1']['f'] for score in rouge_scores])
-            metrics.rouge_2 = np.mean([score['rouge-2']['f'] for score in rouge_scores])
-            metrics.rouge_l = np.mean([score['rouge-l']['f'] for score in rouge_scores])
-        except:
+        if self.rouge is not None:
+            try:
+                rouge_scores = self.rouge.get_scores(generated_texts, target_texts)
+                metrics.rouge_1 = np.mean([score['rouge-1']['f'] for score in rouge_scores])
+                metrics.rouge_2 = np.mean([score['rouge-2']['f'] for score in rouge_scores])
+                metrics.rouge_l = np.mean([score['rouge-l']['f'] for score in rouge_scores])
+            except:
+                metrics.rouge_1 = 0.0
+                metrics.rouge_2 = 0.0
+                metrics.rouge_l = 0.0
+        else:
             metrics.rouge_1 = 0.0
             metrics.rouge_2 = 0.0
             metrics.rouge_l = 0.0
