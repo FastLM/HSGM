@@ -405,19 +405,6 @@ url={https://openreview.net/forum?id=NgbsJ3umjn}
 
 This project is licensed under the MIT License
 
-## Acknowledgments
-
-- We thank the developers of PyTorch, Transformers, and other open-source libraries
-- Special thanks to the research communities for the baseline models and datasets
-- This work was supported by [Funding Information]
-
-## Contact
-
-- **Dong Liu**: dong.liu.dl2367@yale.edu
-- **Yanxuan Yu**: yy3523@columbia.edu
-
-For questions and support, please open an issue on GitHub or contact the authors directly.
-
 ---
 
 **Note**: This implementation is based on the paper "HSGM: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics" by Dong Liu and Yanxuan Yu.
