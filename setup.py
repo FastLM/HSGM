@@ -22,7 +22,7 @@ setup(
     description="Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics",
     long_description=read_readme(),
     long_description_content_type="text/markdown",
-    url="https://github.com/your-username/HSGM",
+    url="https://github.com/FastLM/HSGM",
     packages=find_packages(),
     classifiers=[
         "Development Status :: 4 - Beta",

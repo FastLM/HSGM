@@ -374,7 +374,7 @@ We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.
 ### Development Setup
 
 ```bash
-git clone https://github.com/NoakLiu/HSGM.git
+git clone https://github.com/FastLM/HSGM.git
 cd HSGM
 pip install -e .
 pip install -r requirements-dev.txt
