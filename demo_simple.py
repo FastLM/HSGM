@@ -31,7 +31,7 @@ def demo_basic_components():
     incremental_updater = IncrementalUpdater()
     query_processor = QueryProcessor(hidden_dim=128)
     
-    print("✓ All HSGM components created successfully")
+    print(" All HSGM components created successfully")
     
     return local_graph, hierarchical_memory, incremental_updater, query_processor
 
@@ -53,7 +53,7 @@ def demo_graph_construction():
     # Build graph
     nodes, edges = local_graph.build_graph(tokens, embeddings, segment_id=0)
     
-    print(f"✓ Local graph built:")
+    print(f" Local graph built:")
     print(f"  - Nodes: {len(nodes)}")
     print(f"  - Edges: {len(edges)}")
     
@@ -76,16 +76,16 @@ def demo_hierarchical_memory(nodes, edges):
     
     # Create summary node
     summary_node = hierarchical_memory.create_summary_node((nodes, edges))
-    print(f"✓ Summary node created: shape={summary_node.shape}")
+    print(f" Summary node created: shape={summary_node.shape}")
     
     # Update global graph
     hierarchical_memory.update_global_graph(summary_node)
-    print(f"✓ Global graph updated: {len(hierarchical_memory.global_nodes)} nodes")
+    print(f" Global graph updated: {len(hierarchical_memory.global_nodes)} nodes")
     
     # Test retrieval
     query = torch.randn(64)  # Match summary dimension
     top_k = hierarchical_memory.get_top_k_similar(query, k=1)
-    print(f"✓ Top-K retrieval: found {len(top_k)} similar nodes")
+    print(f" Top-K retrieval: found {len(top_k)} similar nodes")
     
     return hierarchical_memory
 
@@ -161,7 +161,7 @@ def demo_query_processing():
     query = torch.randn(128)
     result = processor.local_graph_reasoning(nodes, edges, query)
     
-    print(f"✓ Query processed: result shape={result.shape}")
+    print(f" Query processed: result shape={result.shape}")
     
     return processor
 

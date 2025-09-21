@@ -24,18 +24,18 @@ def test_basic_functionality():
         
         # Test local semantic graph
         local_graph = LocalSemanticGraph(hidden_dim=64, local_threshold=0.2)
-        print("✓ Local semantic graph created")
+        print("Local semantic graph created")
         
         # Test hierarchical memory
         hierarchical_memory = HierarchicalMemory(hidden_dim=64, global_threshold=0.1)
-        print("✓ Hierarchical memory created")
+        print("Hierarchical memory created")
         
         # Test utility functions
         metrics = compute_complexity_metrics(1000, 256)
-        print(f"✓ Complexity metrics: speedup={metrics['theoretical_speedup']:.2f}x")
+        print(f" Complexity metrics: speedup={metrics['theoretical_speedup']:.2f}x")
         
         error_bound = compute_approximation_error_bound(0.2, 0.1)
-        print(f"✓ Error bound computed: {error_bound:.4f}")
+        print(f" Error bound computed: {error_bound:.4f}")
         
         return True
         
@@ -60,11 +60,11 @@ def test_graph_construction():
         local_graph = LocalSemanticGraph(hidden_dim=64, local_threshold=0.1)
         nodes, edges = local_graph.build_graph(tokens, embeddings, segment_id=0)
         
-        print(f"✓ Graph built: {len(nodes)} nodes, {len(edges)} edges")
+        print(f" Graph built: {len(nodes)} nodes, {len(edges)} edges")
         
         # Test similarity computation
         sim = local_graph.compute_similarity(embeddings[0], embeddings[1])
-        print(f"✓ Similarity computed: {sim:.4f}")
+        print(f" Similarity computed: {sim:.4f}")
         
         return True
         
@@ -95,16 +95,16 @@ def test_hierarchical_memory():
         
         # Create summary node
         summary = memory.create_summary_node((nodes, edges))
-        print(f"✓ Summary node created: shape={summary.shape}")
+        print(f" Summary node created: shape={summary.shape}")
         
         # Update global graph
         memory.update_global_graph(summary)
-        print(f"✓ Global graph updated: {len(memory.global_nodes)} nodes")
+        print(f" Global graph updated: {len(memory.global_nodes)} nodes")
         
         # Test retrieval (use correct dimension)
         query = torch.randn(256)  # Match summary dimension
         top_k = memory.get_top_k_similar(query, k=1)
-        print(f"✓ Top-K retrieval: {len(top_k)} results")
+        print(f" Top-K retrieval: {len(top_k)} results")
         
         return True
         
@@ -131,15 +131,15 @@ def test_incremental_updater():
         
         # Update cache
         updater.update_cache(0, nodes, edges)
-        print("✓ Cache updated")
+        print(" Cache updated")
         
         # Get cached data
         cached = updater.get_cached_segment(0)
-        print(f"✓ Cache retrieval: {cached is not None}")
+        print(f" Cache retrieval: {cached is not None}")
         
         # Get cache stats
         stats = updater.get_cache_stats()
-        print(f"✓ Cache stats: hit_rate={stats['hit_rate']:.3f}")
+        print(f" Cache stats: hit_rate={stats['hit_rate']:.3f}")
         
         return True
         
@@ -168,7 +168,7 @@ def test_query_processor():
         
         # Test local reasoning
         result = processor.local_graph_reasoning(nodes, edges, query)
-        print(f"✓ Local reasoning: shape={result.shape}")
+        print(f" Local reasoning: shape={result.shape}")
         
         return True
         
@@ -192,8 +192,8 @@ def test_visualization():
         hsgm_times = [0.3, 1.2]
         baseline_times = [1.2, 8.5]
         
-        print("✓ Visualizer created")
-        print(f"✓ Available colors: {list(visualizer.colors.keys())}")
+        print(" Visualizer created")
+        print(f" Available colors: {list(visualizer.colors.keys())}")
         
         return True
         
