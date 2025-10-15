@@ -14,7 +14,10 @@ import torch.optim as optim
 from torch.utils.data import DataLoader, Dataset
 from transformers import get_linear_schedule_with_warmup
 from tqdm import tqdm
-import wandb
+try:
+    import wandb
+except ImportError:
+    wandb = None
 from sklearn.metrics import accuracy_score, f1_score, precision_recall_fscore_support
 
 # Add parent directory to path
@@ -111,7 +114,7 @@ class HSGMTrainer:
         
     def setup_wandb(self):
         """Set up Weights & Biases logging."""
-        if self.config.use_wandb:
+        if self.config.use_wandb and wandb is not None:
             wandb.init(
                 project=self.config.wandb_project,
                 config={
@@ -187,7 +190,7 @@ class HSGMTrainer:
             })
             
             # Log to wandb
-            if self.config.use_wandb and batch_idx % self.config.log_interval == 0:
+            if self.config.use_wandb and wandb is not None and batch_idx % self.config.log_interval == 0:
                 wandb.log({
                     "train_loss": loss.item(),
                     "epoch": self.current_epoch,
@@ -303,7 +306,7 @@ class HSGMTrainer:
             # Log metrics
             logger.info(f"Epoch {epoch}: {epoch_metrics}")
             
-            if self.config.use_wandb:
+            if self.config.use_wandb and wandb is not None:
                 wandb.log(epoch_metrics)
             
             # Save best model
