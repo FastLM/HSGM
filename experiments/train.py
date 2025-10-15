@@ -17,14 +17,14 @@ from tqdm import tqdm
 import wandb
 from sklearn.metrics import accuracy_score, f1_score, precision_recall_fscore_support
 
-# Add current directory to path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import HSGMConfig, DatasetConfig, ExperimentConfig
 from hsgm import HSGMModel, HSGMForClassification, HSGMForGeneration
-from data_loader import HSGMDataset, create_dataloaders
-from evaluation import Evaluator
-from baselines import BaselineModels
+from experiments.data_loader import HSGMDataset, create_dataloaders
+from experiments.evaluation import Evaluator
+from experiments.baselines import BaselineModels
 
 # Set up logging
 logging.basicConfig(
