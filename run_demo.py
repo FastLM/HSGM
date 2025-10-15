@@ -17,9 +17,9 @@ from config import HSGMConfig
 from hsgm import HSGMModel, HSGMForClassification
 from hsgm.components import LocalSemanticGraph, HierarchicalMemory, IncrementalUpdater, QueryProcessor, GraphNode, GraphEdge
 from hsgm.utils import compute_complexity_metrics, compute_approximation_error_bound
-from evaluation import Evaluator
-from baselines import BaselineModels
-from visualization import HSGMVisualizer
+from experiments.evaluation import Evaluator
+from experiments.baselines import BaselineModels
+from experiments.visualization import HSGMVisualizer
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
