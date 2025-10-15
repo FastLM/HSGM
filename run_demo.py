@@ -44,21 +44,21 @@ def test_basic_imports():
         return False
     
     try:
-        from evaluation import Evaluator
+        from experiments.evaluation import Evaluator
         print("Evaluator import successful")
     except ImportError as e:
         print(f"Evaluator import failed: {e}")
         return False
     
     try:
-        from baselines import BaselineModels
+        from experiments.baselines import BaselineModels
         print("Baselines import successful")
     except ImportError as e:
         print(f"Baselines import failed: {e}")
         return False
     
     try:
-        from visualization import HSGMVisualizer
+        from experiments.visualization import HSGMVisualizer
         print("Visualization import successful")
     except ImportError as e:
         print(f"Visualization import failed: {e}")
