@@ -103,7 +103,7 @@ Run the comprehensive demo and test suite to see HSGM in action:
 python run_demo.py
 ```
 
-This will demonstrate:
+<!-- This will demonstrate:
 - Basic component functionality
 - Local semantic graph construction
 - Hierarchical memory management
@@ -111,7 +111,7 @@ This will demonstrate:
 - Query processing capabilities
 - Theoretical complexity analysis
 - Visualization components
-- Baseline model comparison
+- Baseline model comparison -->
 
 ## Training
 
@@ -196,13 +196,13 @@ Global Graph Memory
 Query Processing (Hierarchical Retrieval + Local Reasoning)
 ```
 
-### Key Components
+<!-- ### Key Components
 
 1. **Document Segmenter**: Splits documents into coherent segments
 2. **Local Semantic Graph**: Builds graphs within each segment
 3. **Hierarchical Memory**: Maintains summary nodes and global structure
 4. **Incremental Updater**: Handles streaming document updates
-5. **Query Processor**: Performs hierarchical retrieval and reasoning
+5. **Query Processor**: Performs hierarchical retrieval and reasoning -->
 
 ## Performance
 
@@ -303,7 +303,7 @@ class HSGMConfig:
 - **RAG**: DPR retriever with BART generator
 - **REPLUG**: Retrieval-enhanced language models
 
-## Evaluation Metrics
+<!-- ## Evaluation Metrics
 
 ### Performance Metrics
 
@@ -329,7 +329,7 @@ class HSGMConfig:
 - **Performance Comparison**: Accuracy and F1 scores
 - **Efficiency Heatmap**: Model performance across document lengths
 - **Streaming Performance**: Cache hit rates and memory over time
-- **Ablation Study**: Component contribution analysis
+- **Ablation Study**: Component contribution analysis -->
 
 ### Generate Visualizations
 
@@ -401,10 +401,10 @@ url={https://openreview.net/forum?id=NgbsJ3umjn}
 }
 ```
 
-## License
+<!-- ## License
 
-This project is licensed under the MIT License
+This project is licensed under the MIT License -->
 
 ---
 
-**Note**: This implementation is based on the paper "HSGM: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics" by Dong Liu and Yanxuan Yu.
+<!-- **Note**: This implementation is based on the paper "HSGM: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics" by Dong Liu and Yanxuan Yu. -->
