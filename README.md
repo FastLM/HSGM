@@ -101,7 +101,7 @@ python run_demo.py
 ### Train HSGM Model
 
 ```bash
-python train.py --dataset document_amr --task classification --epochs 10
+python experiments/train.py --dataset document_amr --task classification --epochs 10
 ```
 
 ### Available Datasets
@@ -115,15 +115,11 @@ python train.py --dataset document_amr --task classification --epochs 10
 ### Training Options
 
 ```bash
-python train.py \
+python experiments/train.py \
     --dataset document_amr \
     --task classification \
     --batch_size 8 \
-    --learning_rate 3e-5 \
-    --max_epochs 10 \
-    --segment_size 256 \
-    --local_threshold 0.2 \
-    --global_threshold 0.1
+    --learning_rate 3e-5
 ```
 
 ## Experiments
@@ -131,34 +127,9 @@ python train.py \
 ### Run Comprehensive Experiments
 
 ```bash
-python experiments.py \
+python experiments/experiments.py \
     --dataset document_amr \
-    --experiments main ablation scalability streaming \
-    --output_dir ./results
-```
-
-<!-- ### Available Experiments
-
-- **main**: Compare HSGM with baseline models
-- **ablation**: Component ablation study
-- **scalability**: Performance across document lengths
-- **streaming**: Incremental processing simulation
-- **hyperparameter**: Sensitivity analysis -->
-
-### Individual Experiment Types
-
-```bash
-# Main comparison experiment
-python experiments.py --experiments main
-
-# Ablation study
-python experiments.py --experiments ablation
-
-# Scalability analysis
-python experiments.py --experiments scalability
-
-# Streaming simulation
-python experiments.py --experiments streaming
+    --experiments main ablation scalability streaming
 ```
 
 ## Architecture

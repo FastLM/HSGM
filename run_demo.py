@@ -260,7 +260,7 @@ def test_visualization():
     print("\nTesting visualization...")
     
     try:
-        from visualization import HSGMVisualizer
+        from experiments.visualization import HSGMVisualizer
         
         visualizer = HSGMVisualizer()
         
