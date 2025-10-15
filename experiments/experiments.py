@@ -16,15 +16,15 @@ from torch.utils.data import DataLoader
 from tqdm import tqdm
 import pandas as pd
 
-# Add current directory to path
-sys.path.append(os.path.dirname(os.path.abspath(__file__)))
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from config import HSGMConfig, DatasetConfig, ExperimentConfig
 from hsgm import HSGMModel, HSGMForClassification
-from data_loader import create_dataloaders, create_streaming_dataset
-from evaluation import Evaluator
-from baselines import BaselineModels
-from visualization import HSGMVisualizer, create_comparison_report
+from experiments.data_loader import create_dataloaders, create_streaming_dataset
+from experiments.evaluation import Evaluator
+from experiments.baselines import BaselineModels
+from experiments.visualization import HSGMVisualizer, create_comparison_report
 
 # Set up logging
 logging.basicConfig(

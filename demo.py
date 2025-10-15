@@ -8,9 +8,9 @@ import logging
 
 from config import HSGMConfig
 from hsgm import HSGMModel, HSGMForClassification
-from evaluation import Evaluator
-from baselines import BaselineModels
-from visualization import HSGMVisualizer
+from experiments.evaluation import Evaluator
+from experiments.baselines import BaselineModels
+from experiments.visualization import HSGMVisualizer
 
 # Set up logging
 logging.basicConfig(level=logging.INFO)
