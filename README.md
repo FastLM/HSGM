@@ -137,13 +137,13 @@ python experiments.py \
     --output_dir ./results
 ```
 
-### Available Experiments
+<!-- ### Available Experiments
 
 - **main**: Compare HSGM with baseline models
 - **ablation**: Component ablation study
 - **scalability**: Performance across document lengths
 - **streaming**: Incremental processing simulation
-- **hyperparameter**: Sensitivity analysis
+- **hyperparameter**: Sensitivity analysis -->
 
 ### Individual Experiment Types
 
