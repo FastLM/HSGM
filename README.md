@@ -14,11 +14,11 @@ Semantic parsing of long documents remains challenging due to quadratic growth i
 ## Key Features
 
 - **Efficient Processing**: Reduces complexity from O(N²) to O(Nk + (N/k)²)
-- **Hierarchical Memory**: Maintains both local and global semantic structures
-- **Incremental Updates**: Supports streaming document processing
+- **CUDA Acceleration**: Custom CUDA kernels for 2-4× speedup on GPU
+- **Hierarchical Memory**: Local and global semantic graph structures
+- **Incremental Updates**: Streaming document processing support
 - **Hierarchical Querying**: Top-K retrieval with fine-grained reasoning
-- **Comprehensive Evaluation**: Extensive comparison with state-of-the-art baselines
-- **Multiple Tasks**: Supports AMR parsing, SRL, event extraction, QA, and summarization
+- **Multiple Tasks**: AMR parsing, SRL, event extraction, QA, and summarization
 
 ## Installation
 
@@ -103,15 +103,7 @@ Run the comprehensive demo and test suite to see HSGM in action:
 python run_demo.py
 ```
 
-<!-- This will demonstrate:
-- Basic component functionality
-- Local semantic graph construction
-- Hierarchical memory management
-- Incremental update mechanism
-- Query processing capabilities
-- Theoretical complexity analysis
-- Visualization components
-- Baseline model comparison -->
+
 
 ## Training
 
@@ -180,198 +172,89 @@ python experiments.py --experiments streaming
 
 ## Architecture
 
-### HSGM Components
+### Pipeline
 
 ```
-Input Document
-     ↓
-Document Segmentation
-     ↓
-Local Semantic Graph Construction
-     ↓
-Hierarchical Memory Building
-     ↓
-Global Graph Memory
-     ↓
-Query Processing (Hierarchical Retrieval + Local Reasoning)
+Input Document → Segmentation → Local Graphs → Hierarchical Memory → Query Processing
 ```
 
-<!-- ### Key Components
+### Core Components
 
 1. **Document Segmenter**: Splits documents into coherent segments
-2. **Local Semantic Graph**: Builds graphs within each segment
-3. **Hierarchical Memory**: Maintains summary nodes and global structure
-4. **Incremental Updater**: Handles streaming document updates
-5. **Query Processor**: Performs hierarchical retrieval and reasoning -->
+2. **Local Semantic Graph**: Builds graphs within each segment using CUDA-accelerated similarity
+3. **Hierarchical Memory**: Maintains summary nodes with global structure
+4. **Query Processor**: Hierarchical retrieval with local reasoning
+
+### CUDA Acceleration
+
+HSGM includes custom CUDA kernels for GPU acceleration:
+
+- **Pairwise Similarity**: Vectorized cosine similarity (O(Nk))
+- **Adaptive Thresholding**: Parallel statistics with reduction
+- **Sparse Edge Creation**: Efficient COO format construction
+- **Cross-Segment Attention**: Multi-head attention with shared memory
+- **Top-K Retrieval**: Bitonic sort for fast selection
+
+Enable CUDA support:
+```python
+from hsgm import get_hsgm_ops
+
+# Automatically uses CUDA if available
+ops = get_hsgm_ops(device='cuda')
+similarities = ops.pairwise_similarity(embeddings)
+```
 
 ## Performance
 
-### Theoretical Complexity
+### Complexity
 
-- **HSGM**: O(Nk + (N/k)²) where k is segment size
+- **HSGM**: O(Nk + (N/k)²) with k ≪ N
 - **Full Graph**: O(N²)
-- **Speedup**: Up to 59x on 20k-token documents
+- **Optimal k**: √N achieves O(N^(3/2))
 
-### Empirical Results
+### Benchmark Results
 
-| Model | Accuracy | F1 Score | Speed | Memory |
-|-------|----------|----------|-------|--------|
-| HSGM | 78.5% | 85.6% | 380ms | 8.2GB |
-| Longformer | 76.8% | 84.5% | 700ms | 6.8GB |
-| BigBird | 77.1% | 84.8% | 650ms | 6.5GB |
-| Full Graph | 78.2% | 85.1% | 1200ms | 12.5GB |
+| Model | Accuracy | F1 | Time (ms) | Memory (GB) |
+|-------|----------|----|-----------| ------------|
+| HSGM | 78.5% | 85.6% | 380 | 8.2 |
+| Longformer | 76.8% | 84.5% | 700 | 6.8 |
+| BigBird | 77.1% | 84.8% | 650 | 6.5 |
+| Full Graph | 78.2% | 85.1% | 1200 | 12.5 |
 
-### Scalability Analysis
+### Scalability (20k tokens)
 
-| Document Length | HSGM Time | Baseline Time | Speedup | Memory Reduction |
-|----------------|-----------|---------------|---------|------------------|
-| 1k tokens | 0.3s | 1.2s | 4.0x | 48% |
-| 5k tokens | 1.2s | 8.5s | 7.1x | 65% |
-| 10k tokens | 2.8s | 25.3s | 9.0x | 72% |
-| 20k tokens | 5.2s | 85.7s | 16.5x | 78% |
+- **Speedup**: 16.5× faster than baseline
+- **Memory**: 78% reduction vs Full Graph
+- **Accuracy**: 95%+ of baseline performance
 
 ## Configuration
 
-### Main Configuration Options
-
 ```python
-@dataclass
-class HSGMConfig:
-    # Model architecture
-    hidden_dim: int = 768
-    num_attention_heads: int = 12
-    num_layers: int = 6
-    
-    # HSGM specific parameters
-    segment_size: int = 256
-    local_threshold: float = 0.2
-    global_threshold: float = 0.1
-    top_k_retrieval: int = 5
-    
-    # Training parameters
-    learning_rate: float = 3e-5
-    batch_size: int = 8
-    max_epochs: int = 10
-    
-    # Paths
-    data_dir: str = "./data"
-    output_dir: str = "./outputs"
+from config import HSGMConfig
+
+config = HSGMConfig(
+    hidden_dim=768,
+    segment_size=256,
+    local_threshold=0.2,
+    global_threshold=0.1,
+    top_k_retrieval=5,
+    learning_rate=3e-5
+)
 ```
 
 ## Datasets
 
-### Supported Datasets
+Supported: Document-AMR, OntoNotes-SRL, Legal-ECHR, NarrativeQA, GovReport
 
-1. **Document-AMR**: 500 training, 100 validation, 100 test documents
-2. **OntoNotes-SRL**: 20k training, 2k validation, 2k test segments
-3. **Legal-ECHR**: European Court of Human Rights cases
-4. **NarrativeQA**: Long-form narrative question answering
-5. **GovReport**: Government report summarization
+## Baselines
 
-### Data Format
+**Transformer**: Longformer, BigBird, LongT5, Reformer  
+**Graph**: Full Graph, Sliding Window, Graph Transformer  
+**Retrieval**: BM25+T5, FiD, SGPT, RAG, REPLUG
 
-```json
-{
-    "text": "Document content...",
-    "labels": [0, 1, 2],
-    "metadata": {
-        "doc_id": "unique_id",
-        "length": 1234,
-        "source": "dataset_name"
-    }
-}
-```
 
-## Baseline Models
 
-### Transformer-based Baselines
-
-- **Full Graph**: Single global semantic graph
-- **Sliding Window Graph**: Fixed-size windows with overlap
-- **Longformer**: Sparse transformer with local+global attention
-- **BigBird**: Sparse attention with random, window, global patterns
-- **LongT5**: Encoder-decoder with local attention and global memory
-- **Hierarchical Transformer**: Two-level segment and document attention
-- **Graph Transformer**: Graph-structured data transformer
-- **Reformer**: Efficient transformer with LSH attention
-
-### Retrieval-augmented Baselines
-
-- **BM25 + T5**: BM25 retrieval with T5 generation
-- **FiD**: Fusion-in-Decoder with dense retrieval
-- **SGPT**: SGPT-1.3B with semantic similarity retrieval
-- **RAG**: DPR retriever with BART generator
-- **REPLUG**: Retrieval-enhanced language models
-
-<!-- ## Evaluation Metrics
-
-### Performance Metrics
-
-- **Accuracy**: Classification accuracy
-- **F1 Score**: Precision, Recall, F1 (macro/weighted)
-- **ROUGE**: ROUGE-1, ROUGE-2, ROUGE-L for generation
-- **BLEU**: BLEU score for text generation
-- **Smatch F1**: For AMR parsing
-
-### Efficiency Metrics
-
-- **Processing Time**: End-to-end inference time
-- **Memory Usage**: Peak GPU memory consumption
-- **Throughput**: Documents processed per second
-- **Cache Hit Rate**: Fraction of reused computations
-
-## Visualization
-
-### Available Plots
-
-- **Complexity Analysis**: Processing time vs document length
-- **Memory Usage**: Memory consumption comparison
-- **Performance Comparison**: Accuracy and F1 scores
-- **Efficiency Heatmap**: Model performance across document lengths
-- **Streaming Performance**: Cache hit rates and memory over time
-- **Ablation Study**: Component contribution analysis -->
-
-### Generate Visualizations
-
-```python
-from visualization import HSGMVisualizer
-
-visualizer = HSGMVisualizer()
-
-# Plot complexity analysis
-visualizer.plot_complexity_analysis(
-    document_lengths, hsgm_times, baseline_times
-)
-
-# Plot memory usage
-visualizer.plot_memory_usage(
-    document_lengths, hsgm_memory, baseline_memory
-)
-```
-
-## Theoretical Analysis
-
-### Complexity Reduction
-
-HSGM reduces worst-case complexity from O(N²) to O(Nk + (N/k)²):
-
-- **Local Graph Construction**: O(Nk) for N tokens with segment size k
-- **Global Memory Building**: O((N/k)²) for M = N/k segments
-- **Optimal Segment Size**: k = √N achieves O(N^(3/2)) complexity
-
-### Approximation Error Bounds
-
-Given thresholds δℓ ≥ γℓ and δg ≥ γg, the approximation error is bounded by:
-
-||Afull - AHSGM||F ≤ f(γℓ, γg) · ||Afull||F
-
-where f(γℓ, γg) = √(2(1 - γℓ²)) + √(2(1 - γg²))
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details.
-
-### Development Setup
+## Development
 
 ```bash
 git clone https://github.com/FastLM/HSGM.git
@@ -401,10 +284,3 @@ url={https://openreview.net/forum?id=NgbsJ3umjn}
 }
 ```
 
-<!-- ## License
-
-This project is licensed under the MIT License -->
-
----
-
-<!-- **Note**: This implementation is based on the paper "HSGM: Hierarchical Segment-Graph Memory for Scalable Long-Text Semantics" by Dong Liu and Yanxuan Yu. -->

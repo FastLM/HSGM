@@ -22,6 +22,12 @@ from .utils import (
     GraphAggregator
 )
 
+try:
+    from .hsgm_ops import HSGMOps, get_hsgm_ops
+    __all_hsgm_ops__ = ["HSGMOps", "get_hsgm_ops"]
+except ImportError:
+    __all_hsgm_ops__ = []
+
 __all__ = [
     "HSGMModel",
     "HSGMForClassification",
@@ -33,4 +39,4 @@ __all__ = [
     "DocumentSegmenter",
     "SimilarityComputer",
     "GraphAggregator"
-]
+] + __all_hsgm_ops__
