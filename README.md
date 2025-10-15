@@ -9,16 +9,7 @@
 
 ## Abstract
 
-Semantic parsing of long documents remains challenging due to quadratic growth in pairwise composition and memory requirements. We introduce **Hierarchical Segment-Graph Memory (HSGM)**, a novel framework that decomposes an input of length N into M meaningful segments, constructs Local Semantic Graphs on each segment, and extracts compact summary nodes to form a Global Graph Memory. HSGM supports incremental updates—only newly arrived segments incur local graph construction and summary-node integration—while Hierarchical Query Processing locates relevant segments via top-K retrieval over summary nodes and then performs fine-grained reasoning within their local graphs.
-
-## Key Features
-
-- **Efficient Processing**: Reduces complexity from O(N²) to O(Nk + (N/k)²)
-- **CUDA Acceleration**: Custom CUDA kernels for 2-4× speedup on GPU
-- **Hierarchical Memory**: Local and global semantic graph structures
-- **Incremental Updates**: Streaming document processing support
-- **Hierarchical Querying**: Top-K retrieval with fine-grained reasoning
-- **Multiple Tasks**: AMR parsing, SRL, event extraction, QA, and summarization
+Semantic parsing of long documents remains challenging due to quadratic growth in pairwise composition and memory requirements. We introduce **Hierarchical Segment-Graph Memory (HSGM)**, a novel framework that decomposes an input of length N into M meaningful segments, constructs Local Semantic Graphs on each segment, and extracts compact summary nodes to form a Global Graph Memory. HSGM reduces complexity from O(N²) to O(Nk + (N/k)²), achieving 2-4× speedup with custom CUDA kernels and 60%+ memory reduction. The framework supports incremental updates for streaming documents, hierarchical query processing via top-K retrieval, and multiple semantic tasks including AMR parsing, SRL, event extraction, QA, and summarization.
 
 ## Installation
 
@@ -178,29 +169,13 @@ python experiments.py --experiments streaming
 Input Document → Segmentation → Local Graphs → Hierarchical Memory → Query Processing
 ```
 
-### Core Components
+### Components & Acceleration
 
-1. **Document Segmenter**: Splits documents into coherent segments
-2. **Local Semantic Graph**: Builds graphs within each segment using CUDA-accelerated similarity
-3. **Hierarchical Memory**: Maintains summary nodes with global structure
-4. **Query Processor**: Hierarchical retrieval with local reasoning
+The framework consists of four core components: a Document Segmenter that splits documents into coherent segments, a Local Semantic Graph builder that constructs graphs within each segment, a Hierarchical Memory that maintains summary nodes with global structure, and a Query Processor for hierarchical retrieval with local reasoning. HSGM leverages custom CUDA kernels for GPU acceleration including vectorized pairwise similarity computation (O(Nk)), parallel adaptive thresholding with reduction, efficient sparse edge creation in COO format, multi-head cross-segment attention with shared memory optimization, and bitonic sort for fast top-K retrieval.
 
-### CUDA Acceleration
-
-HSGM includes custom CUDA kernels for GPU acceleration:
-
-- **Pairwise Similarity**: Vectorized cosine similarity (O(Nk))
-- **Adaptive Thresholding**: Parallel statistics with reduction
-- **Sparse Edge Creation**: Efficient COO format construction
-- **Cross-Segment Attention**: Multi-head attention with shared memory
-- **Top-K Retrieval**: Bitonic sort for fast selection
-
-Enable CUDA support:
 ```python
 from hsgm import get_hsgm_ops
-
-# Automatically uses CUDA if available
-ops = get_hsgm_ops(device='cuda')
+ops = get_hsgm_ops(device='cuda')  # Auto-detects CUDA
 similarities = ops.pairwise_similarity(embeddings)
 ```
 
