@@ -406,7 +406,7 @@ def main():
     test_metrics = trainer.validate(test_loader)
     logger.info(f"Test metrics: {test_metrics}")
     
-    if config.use_wandb:
+    if config.use_wandb and wandb is not None:
         wandb.log({"test_metrics": test_metrics})
         wandb.finish()
 
